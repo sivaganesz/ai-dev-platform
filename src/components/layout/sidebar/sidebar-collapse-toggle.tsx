@@ -3,7 +3,7 @@ import { useSidebar } from "./sidebar-context";
 import { Button } from "@/components/ui/button";
 
 export function SidebarCollapseToggle() {
-  const { isCollapsed, toggleCollapse } = useSidebar();
+  const { toggleCollapse } = useSidebar();
 
   return (
     <Button
