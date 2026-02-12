@@ -33,7 +33,9 @@ export function TeamPerformanceChart() {
                   backgroundColor: "hsl(var(--card))",
                   border: "1px solid hsl(var(--border))",
                   borderRadius: "8px",
+                  color: "hsl(var(--foreground))",
                 }}
+                itemStyle={{ color: "hsl(var(--foreground))" }}
               />
               <Legend />
               <Bar dataKey="completed" stackId="a" fill="#10b981" radius={[0, 0, 0, 0]} barSize={20} />

@@ -48,7 +48,9 @@ export function ProjectSummaryChart({ projects }: ProjectSummaryChartProps) {
                   backgroundColor: "hsl(var(--card))",
                   border: "1px solid hsl(var(--border))",
                   borderRadius: "8px",
+                  color: "hsl(var(--foreground))",
                 }}
+                itemStyle={{ color: "hsl(var(--foreground))" }}
               />
               <Bar dataKey="value" radius={[4, 4, 0, 0]} barSize={40}>
                 {data.map((entry, index) => (
