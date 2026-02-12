@@ -4,6 +4,7 @@ import MainLayout from "@/app/layouts/main-layout";
 
 const DashboardPage = lazy(() => import("@/modules/dashboard/pages/dashboard-page"));
 const ProjectsPage = lazy(() => import("@/modules/projects/pages/projects-page"));
+const WorkflowsPage = lazy(() => import("@/modules/workflows/pages/workflows-page"));
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,14 @@ const router = createBrowserRouter([
         element: (
           <Suspense fallback={<div>Loading...</div>}>
             <ProjectsPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "workflows",
+        element: (
+          <Suspense fallback={<div>Loading...</div>}>
+            <WorkflowsPage />
           </Suspense>
         ),
       },
