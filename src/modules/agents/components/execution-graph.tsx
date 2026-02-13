@@ -19,7 +19,7 @@ const idToPath: Record<string, string> = {
   "AG-005": "ux",
 };
 
-export function ExecutionGraph({ nodes, edges }: ExecutionGraphProps) {
+export function ExecutionGraph({ nodes }: ExecutionGraphProps) {
   const getStatusIcon = (status: ExecutionNode["status"]) => {
     switch (status) {
       case "COMPLETED":

@@ -8,6 +8,9 @@ const WorkflowsPage = lazy(() => import("@/modules/workflows/pages/workflows-pag
 const AgentsPage = lazy(() => import("@/modules/agents/pages/agents-overview-page"));
 const AgentDetailsPage = lazy(() => import("@/modules/agents/pages/agent-details-page"));
 
+const SeniorDevelopersPage = lazy(() => import("@/modules/governance/senior-developers/pages/senior-developers-page"));
+const SeniorDeveloperDetailsPage = lazy(() => import("@/modules/governance/senior-developers/pages/senior-developer-details-page"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -55,6 +58,32 @@ const router = createBrowserRouter([
                 <AgentDetailsPage />
               </Suspense>
             ),
+          },
+        ],
+      },
+      {
+        path: "governance",
+        children: [
+          {
+            path: "senior-developers",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <SeniorDevelopersPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":id",
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <SeniorDeveloperDetailsPage />
+                  </Suspense>
+                ),
+              },
+            ],
           },
         ],
       },

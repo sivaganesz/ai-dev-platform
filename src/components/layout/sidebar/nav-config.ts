@@ -103,7 +103,7 @@ export const navigationConfig: NavGroup[] = [
     items: [
       {
         title: "Senior Developers",
-        href: "/governance/devs",
+        href: "/governance/senior-developers",
         icon: Users,
       },
       {

@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Activity, Clock, Target, Rocket, AlertCircle, ShieldCheck, ShieldAlert, Shield, BrainCircuit } from "lucide-react";
-import type { Agent, AgentActivity } from "@/../mock/core/agents/agentsData";
 import { AgentRoleExecutionFlow } from "../components/agent-role-execution-flow";
 import { AgentActiveTasks } from "../components/agent-active-tasks";
 import { AgentExecutionTimeline } from "../components/agent-execution-timeline";
