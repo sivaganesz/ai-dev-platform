@@ -114,7 +114,7 @@ export const navigationConfig: NavGroup[] = [
       },
       {
         title: "Code Reviews",
-        href: "/governance/reviews",
+        href: "/governance/code-reviews",
         icon: FileText,
       },
       {

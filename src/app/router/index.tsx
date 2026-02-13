@@ -14,6 +14,9 @@ const SeniorDeveloperDetailsPage = lazy(() => import("@/modules/governance/senio
 const ApprovalsPage = lazy(() => import("@/modules/governance/approvals/pages/approvals-page"));
 const ApprovalDetailsPage = lazy(() => import("@/modules/governance/approvals/pages/approval-details-page"));
 
+const CodeReviewsPage = lazy(() => import("@/modules/governance/code-reviews/pages/code-reviews-page"));
+const CodeReviewDetailsPage = lazy(() => import("@/modules/governance/code-reviews/pages/review-details-page"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -104,6 +107,27 @@ const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
                     <ApprovalDetailsPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "code-reviews",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <CodeReviewsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":id",
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <CodeReviewDetailsPage />
                   </Suspense>
                 ),
               },
