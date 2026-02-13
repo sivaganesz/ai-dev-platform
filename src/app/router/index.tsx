@@ -23,6 +23,7 @@ const ArchitectureDecisionAnalysisPage = lazy(() => import("@/modules/governance
 
 const SandboxEnvironmentsPage = lazy(() => import("@/modules/sandbox/pages/sandbox-environments-page"));
 const LiveUIPreviewsPage = lazy(() => import("@/modules/sandbox/pages/live-ui-previews-page"));
+const DemoBuildsPage = lazy(() => import("@/modules/sandbox/pages/demo-builds-page"));
 
 const router = createBrowserRouter([
   {
@@ -187,6 +188,14 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <LiveUIPreviewsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "builds",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DemoBuildsPage />
               </Suspense>
             ),
           },
