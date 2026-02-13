@@ -8,11 +8,11 @@ export default function MainLayout() {
   return (
     <SidebarProvider>
       <TooltipProvider>
-        <div className="flex min-h-screen bg-background">
+        <div className="flex h-screen overflow-hidden bg-background">
           {/* Desktop Sidebar */}
           <Sidebar />
 
-          <div className="flex flex-1 flex-col">
+          <div className="flex flex-1 flex-col overflow-hidden">
             {/* Topbar */}
             <header className="sticky top-0 z-40 flex h-16 w-full items-center border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="flex flex-1 items-center gap-4">
