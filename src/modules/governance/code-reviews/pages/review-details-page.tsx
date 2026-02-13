@@ -4,7 +4,7 @@ import { useCodeReview } from "../hooks/use-code-reviews-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ShieldCheck, AlertCircle, MessageSquare, Workflow, Box, User, ShieldAlert, BarChart3, Fingerprint } from "lucide-react"
+import { ChevronLeft, ShieldCheck, MessageSquare, Workflow, User, ShieldAlert, BarChart3, Fingerprint } from "lucide-react"
 import { seniorDevelopers } from "@/../mock/core/governance/seniorDevelopersData"
 import { Progress } from "@/components/ui/progress"
 

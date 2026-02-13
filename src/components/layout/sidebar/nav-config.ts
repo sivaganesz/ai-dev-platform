@@ -119,7 +119,7 @@ export const navigationConfig: NavGroup[] = [
       },
       {
         title: "Architecture Decisions",
-        href: "/governance/architecture",
+        href: "/governance/architecture-decisions",
         icon: ShieldCheck,
       },
     ],

@@ -17,6 +17,10 @@ const ApprovalDetailsPage = lazy(() => import("@/modules/governance/approvals/pa
 const CodeReviewsPage = lazy(() => import("@/modules/governance/code-reviews/pages/code-reviews-page"));
 const CodeReviewDetailsPage = lazy(() => import("@/modules/governance/code-reviews/pages/review-details-page"));
 
+const ArchitectureDecisionsPage = lazy(() => import("@/modules/governance/architecture-decisions/pages/architecture-decisions-page"));
+const ArchitectureDecisionDetailsPage = lazy(() => import("@/modules/governance/architecture-decisions/pages/decision-details-page"));
+const ArchitectureDecisionAnalysisPage = lazy(() => import("@/modules/governance/architecture-decisions/pages/architecture-decision-analysis-page"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -128,6 +132,35 @@ const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
                     <CodeReviewDetailsPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "architecture-decisions",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ArchitectureDecisionsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":id",
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ArchitectureDecisionDetailsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: "analyze/:decisionId",
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ArchitectureDecisionAnalysisPage />
                   </Suspense>
                 ),
               },
