@@ -129,12 +129,12 @@ export const navigationConfig: NavGroup[] = [
     items: [
       {
         title: "Sandbox Environments",
-        href: "/sandbox",
+        href: "/sandbox/environments",
         icon: Box,
       },
       {
         title: "Live UI Previews",
-        href: "/sandbox/previews",
+        href: "/sandbox/live-previews",
         icon: MonitorPlay,
       },
       {
