@@ -11,6 +11,9 @@ const AgentDetailsPage = lazy(() => import("@/modules/agents/pages/agent-details
 const SeniorDevelopersPage = lazy(() => import("@/modules/governance/senior-developers/pages/senior-developers-page"));
 const SeniorDeveloperDetailsPage = lazy(() => import("@/modules/governance/senior-developers/pages/senior-developer-details-page"));
 
+const ApprovalsPage = lazy(() => import("@/modules/governance/approvals/pages/approvals-page"));
+const ApprovalDetailsPage = lazy(() => import("@/modules/governance/approvals/pages/approval-details-page"));
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -80,6 +83,27 @@ const router = createBrowserRouter([
                 element: (
                   <Suspense fallback={<div>Loading...</div>}>
                     <SeniorDeveloperDetailsPage />
+                  </Suspense>
+                ),
+              },
+            ],
+          },
+          {
+            path: "approvals",
+            children: [
+              {
+                index: true,
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ApprovalsPage />
+                  </Suspense>
+                ),
+              },
+              {
+                path: ":id",
+                element: (
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <ApprovalDetailsPage />
                   </Suspense>
                 ),
               },
