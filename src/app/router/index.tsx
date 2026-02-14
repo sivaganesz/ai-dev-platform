@@ -38,6 +38,11 @@ const RolesPermissionsPage = lazy(() => import("@/modules/administration/roles-p
 const AIConfigurationsPage = lazy(() => import("@/modules/administration/ai-configurations/pages/ai-configurations-page"));
 const PromptTemplatesPage = lazy(() => import("@/modules/administration/prompt-templates/pages/prompt-templates-page"));
 const UsageBillingPage = lazy(() => import("@/modules/administration/usage-billing/pages/usage-billing-page"));
+const ProfilePage = lazy(() => import("@/modules/settings/profile/pages/profile-page"));
+const CompanyInfoPage = lazy(() => import("@/modules/settings/company-info/pages/company-info-page"));
+const ThemePreferencesPage = lazy(() => import("@/modules/settings/theme-preferences/pages/theme-preferences-page"));
+const APIKeysPage = lazy(() => import("@/modules/settings/api-keys/pages/api-keys-page"));
+const SecuritySettingsPage = lazy(() => import("@/modules/settings/security/pages/security-page"));
 
 const router = createBrowserRouter([
   {
@@ -345,6 +350,51 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <UsageBillingPage />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+      {
+        path: "settings",
+        children: [
+          {
+            path: "profile",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <ProfilePage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "company",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <CompanyInfoPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "theme",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <ThemePreferencesPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "keys",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <APIKeysPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "security",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <SecuritySettingsPage />
               </Suspense>
             ),
           },
