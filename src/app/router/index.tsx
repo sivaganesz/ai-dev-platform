@@ -25,6 +25,10 @@ const SandboxEnvironmentsPage = lazy(() => import("@/modules/sandbox/pages/sandb
 const LiveUIPreviewsPage = lazy(() => import("@/modules/sandbox/pages/live-ui-previews-page"));
 const DemoBuildsPage = lazy(() => import("@/modules/sandbox/pages/demo-builds-page"));
 const ApiSimulationsPage = lazy(() => import("@/modules/api-simulations/pages/api-simulations-page"));
+const PlatformsPage = lazy(() => import("@/modules/integrations/platforms/pages/platforms-page"));
+const CicdPage = lazy(() => import("@/modules/integrations/cicd/pages/cicd-page"));
+const CloudProvidersPage = lazy(() => import("@/modules/integrations/cloud/pages/cloud-providers-page"));
+const NotificationsPage = lazy(() => import("@/modules/integrations/notifications/pages/notifications-page"));
 
 const router = createBrowserRouter([
   {
@@ -205,6 +209,51 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <ApiSimulationsPage />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+      {
+        path: "integrations",
+        children: [
+          {
+            index: true,
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <PlatformsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "platforms",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <PlatformsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "cicd",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <CicdPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "cloud",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <CloudProvidersPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "notifications",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <NotificationsPage />
               </Suspense>
             ),
           },

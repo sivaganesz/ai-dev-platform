@@ -154,7 +154,7 @@ export const navigationConfig: NavGroup[] = [
     items: [
       {
         title: "Platforms",
-        href: "/integrations",
+        href: "/integrations/platforms",
         icon: Plug,
       },
       {
