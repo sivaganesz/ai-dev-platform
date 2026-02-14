@@ -29,6 +29,10 @@ const PlatformsPage = lazy(() => import("@/modules/integrations/platforms/pages/
 const CicdPage = lazy(() => import("@/modules/integrations/cicd/pages/cicd-page"));
 const CloudProvidersPage = lazy(() => import("@/modules/integrations/cloud/pages/cloud-providers-page"));
 const NotificationsPage = lazy(() => import("@/modules/integrations/notifications/pages/notifications-page"));
+const DeploymentsPage = lazy(() => import("@/modules/operations/deployments/pages/deployments-page"));
+const MonitoringPage = lazy(() => import("@/modules/operations/monitoring/pages/monitoring-page"));
+const LogsPage = lazy(() => import("@/modules/operations/logs/pages/logs-page"));
+const PerformancePage = lazy(() => import("@/modules/operations/performance/pages/performance-page"));
 
 const router = createBrowserRouter([
   {
@@ -254,6 +258,43 @@ const router = createBrowserRouter([
             element: (
               <Suspense fallback={<div>Loading...</div>}>
                 <NotificationsPage />
+              </Suspense>
+            ),
+          },
+        ],
+      },
+      {
+        path: "operations",
+        children: [
+          {
+            path: "deployments",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <DeploymentsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "monitoring",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <MonitoringPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "logs",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <LogsPage />
+              </Suspense>
+            ),
+          },
+          {
+            path: "performance",
+            element: (
+              <Suspense fallback={<div>Loading...</div>}>
+                <PerformancePage />
               </Suspense>
             ),
           },
