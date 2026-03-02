@@ -1,0 +1,229 @@
+# AI Dev Platform — Codebase Review
+
+## Overview
+
+An enterprise-grade **AI-driven software development lifecycle platform**. Senior developers prompt AI agents, which generate, test, deploy, and monitor applications. The current state is a **fully functional frontend with mock data** — no real backend yet. The codebase is clean, modular, and ready for API integration.
+
+---
+
+## Tech Stack
+
+| Layer | Library / Tool |
+|---|---|
+| Framework | React 19 + Vite 7 |
+| Language | TypeScript (strict) |
+| Routing | React Router DOM v7 |
+| State/Fetching | TanStack Query v5 |
+| UI Components | Radix UI (Shadcn-style pattern) |
+| Styling | Tailwind CSS v3 + tailwind-animate |
+| HTTP Client | Axios (configured, unused — mock only) |
+| Validation | Zod v4 |
+| Icons | Lucide React |
+| Charts | Recharts |
+| IDs | UUID |
+| Path Alias | `@/` → `src/`, `@/../mock/` → `mock/` |
+
+---
+
+## Folder Structure
+
+```
+d:/PROJECTS/ai-dev-platform/
+├── mock/core/              ← 37 typed mock data files (per module)
+├── src/
+│   ├── main.tsx            ← App entry: ThemeProvider > QueryProvider > AppRouter
+│   ├── App.tsx             ← Unused Vite default (not in router tree)
+│   ├── app/
+│   │   ├── router/index.tsx        ← 35+ lazy routes
+│   │   ├── layouts/main-layout.tsx ← Sidebar + Topbar + <Outlet />
+│   │   └── providers/
+│   │       ├── query-provider.tsx  ← TanStack QueryClient (retry:1, no refetchOnFocus)
+│   │       └── theme-provider.tsx  ← Dark/Light/System, persisted to localStorage
+│   ├── components/
+│   │   ├── ui/             ← 14 Radix UI wrappers (button, card, dialog, etc.)
+│   │   └── layout/sidebar/ ← 10 sidebar files (sidebar.tsx, nav-config.ts, context, etc.)
+│   ├── modules/            ← 11 feature modules (see below)
+│   ├── services/
+│   │   └── api/axios-client.ts  ← Axios, baseURL: VITE_API_BASE_URL || localhost:5174
+│   └── lib/
+```
+
+---
+
+## 11 Feature Modules
+
+Each module follows a consistent pattern: `pages/` → `hooks/` → `components/`
+
+| Module | Sub-modules / Pages | Status |
+|---|---|---|
+| **dashboard** | 1 page, 6 components | ✅ Full |
+| **agents** | Overview + 5 agent type detail pages (frontend, backend, qa, devops, ux) | ✅ Full |
+| **governance** | Senior Developers, Approvals, Code Reviews, Architecture Decisions (each has list + detail) | ✅ Full |
+| **sandbox** | Environments, Live UI Previews, Demo Builds, API Simulations | ✅ Full |
+| **integrations** | Platforms, CI/CD, Cloud Providers, Notifications | ✅ Full |
+| **operations** | Deployments, Monitoring, Logs, Performance | ✅ Full (Logs page is a stub) |
+| **administration** | Users & Teams, Roles & Permissions, AI Configurations, Prompt Templates, Usage & Billing | ✅ Full |
+| **settings** | Profile, Company Info, Theme Preferences, API Keys, Security | ✅ Full |
+| **projects** | Project list | ✅ Full |
+| **workflows** | Workflow list | ✅ Full |
+| **api-simulations** | API simulation runner | ✅ Full |
+
+---
+
+## Routing Tree (35+ Routes)
+
+All routes are lazy-loaded with `React.lazy` + `Suspense`. Route structure:
+
+```
+/                          → Dashboard
+/projects
+/workflows
+/agents                    → Agents Overview
+/agents/:agentType         → Agent Details (frontend | backend | qa | devops | ux)
+/governance/senior-developers
+/governance/senior-developers/:id
+/governance/approvals
+/governance/approvals/:id
+/governance/code-reviews
+/governance/code-reviews/:id
+/governance/architecture-decisions
+/governance/architecture-decisions/:id
+/governance/architecture-decisions/analyze/:decisionId
+/sandbox/environments
+/sandbox/live-previews
+/sandbox/builds
+/sandbox/api               → API Simulations
+/integrations / /integrations/platforms
+/integrations/cicd
+/integrations/cloud
+/integrations/notifications
+/operations/deployments
+/operations/monitoring
+/operations/logs
+/operations/performance
+/admin/users
+/admin/roles
+/admin/ai-config
+/admin/prompts
+/admin/billing
+/settings/profile
+/settings/company
+/settings/theme
+/settings/keys
+/settings/security
+```
+
+---
+
+## Data Flow Pattern (Universal)
+
+Every feature module follows the same data layer pattern:
+
+```
+mock/core/<module>/<Entity>Data.ts   →  TypeScript types + static data arrays
+        ↓ imported by
+src/modules/<module>/hooks/use-<module>-data.ts   →  useQuery() wrapping mock with 500ms delay
+        ↓ consumed by
+src/modules/<module>/pages/<module>-page.tsx      →  Page component
+        ↓ uses
+src/modules/<module>/components/<component>.tsx   →  Pure display components
+```
+
+This pattern makes **swapping mock for real API calls trivial** — only the [queryFn](file:///d:/PROJECTS/ai-dev-platform/src/modules/dashboard/hooks/use-dashboard-data.ts#9-21) bodies in hooks need updating.
+
+---
+
+## Sidebar Navigation
+
+8 navigation groups, 35 total nav items, defined in [nav-config.ts](file:///d:/PROJECTS/ai-dev-platform/src/components/layout/sidebar/nav-config.ts):
+
+| Group | Items |
+|---|---|
+| CORE | Dashboard, Projects, Workflows |
+| AI AGENTS | Overview, Frontend, Backend, QA, DevOps, UX |
+| DEVELOPMENT GOVERNANCE | Senior Developers, Approvals *(badge: 3)*, Code Reviews, Architecture Decisions |
+| SANDBOX & DEMO | Environments, Live UI Previews, Demo Builds, API Simulations |
+| INTEGRATIONS | Platforms, CI/CD, Cloud, Notifications |
+| OPERATIONS | Deployments, Monitoring, Logs, Performance |
+| ADMINISTRATION | Users & Teams, Roles & Permissions, AI Configs, Prompt Templates, Usage & Billing |
+| SETTINGS | Profile, Company Info, Theme, API Keys, Security |
+
+---
+
+## Services Layer
+
+### [axios-client.ts](file:///d:/PROJECTS/ai-dev-platform/src/services/api/axios-client.ts)
+- `baseURL`: `VITE_API_BASE_URL` env var OR `http://localhost:5174`
+- Auth: reads `token` from `localStorage` → sets `Authorization: Bearer <token>`
+- 401 response interceptor present (handler is a stub — no redirect yet)
+- **All hooks currently bypass this client** (they import from mock directly)
+
+### [query-provider.tsx](file:///d:/PROJECTS/ai-dev-platform/src/app/providers/query-provider.tsx)
+- `retry: 1`
+- `refetchOnWindowFocus: false`
+- No staleTime set (defaults to 0 — will refetch on every mount)
+
+---
+
+## Mock Data Layer (`mock/core/`)
+
+37 typed `.ts` files — all are well-structured with explicit TypeScript interfaces:
+
+| Domain | Key Types |
+|---|---|
+| Dashboard | `DashboardMetrics`, `Activity`, `TeamPerformance` |
+| Agents | `Agent`, `AgentActivity`, `AgentType`, `AgentStatus` |
+| Projects | `Project` (uuid IDs) |
+| Governance | `Approval`, `SeniorDeveloper`, `CodeReview`, `ArchitectureDecision` |
+| Operations | `LogEntry` (levels: INFO/WARN/ERROR/DEBUG, sources: 6 service types), `DeploymentRecord` |
+| Administration | `User`, `Role`, `AIConfig`, `PromptTemplate`, `BillingRecord` |
+| Settings | `UserProfile`, `CompanyInfo`, `APIKey`, `SecuritySettings` |
+
+---
+
+## UI Component Library (`src/components/ui/`)
+
+14 Radix UI wrappers: `avatar`, `badge`, `button`, `card`, `dialog`, `input`, `progress`, `scroll-area`, `select`, `separator`, `sheet`, `table`, `tabs`, `tooltip`
+
+---
+
+## Key Observations for Backend Development
+
+> [!IMPORTANT]
+> The Axios client `baseURL` is hardcoded to `http://localhost:5174` (same as the Vite dev port). The actual backend server should run on a **different port** (e.g., `5000`, `8000`, `3001`) and `VITE_API_BASE_URL` should be set via `.env` files.
+
+> [!NOTE]
+> **All hooks are ready to be migrated.** The `queryFn` in every hook currently does:
+> ```ts
+> await new Promise(r => setTimeout(r, 500));  // simulated delay
+> return mockData;                              // ← replace with: axiosClient.get('/endpoint')
+> ```
+> Migration is a 1-line change per hook.
+
+> [!NOTE]
+> **No authentication flows exist yet** — the token interceptor reads from `localStorage["token"]` but there's no login page, no auth context, no protected route guards, and no redirect on 401.
+
+> [!TIP]
+> **`staleTime` should be configured** once real APIs are in place. Currently queries refetch on every component mount (staleTime = 0 default). Consider setting `staleTime: 60_000` or per-query values in the backend integration phase.
+
+> [!NOTE]
+> **`App.tsx` is the default Vite boilerplate** — it is never used in the routing tree. `main.tsx` goes directly to `AppRouter` which renders via `MainLayout` + `Outlet`.
+
+> [!NOTE]
+> The `Logs` page (`/operations/logs`) is a **stub** — just a placeholder card with "coming soon" text, even though `logsData.ts` is rich (6 log entries with stack traces, metadata, levels, sources). This page needs its full UI built.
+
+---
+
+## Recommended Backend Stack Considerations
+
+Based on the mock data types and the platform's domain (AI agent orchestration, deployments, CI/CD, governance):
+
+- **Entities to model**: Projects, Workflows, Agents, Deployments, LogEntries, Approvals, CodeReviews, ArchitectureDecisions, Users, Roles, Teams, APIKeys, PromptTemplates, BillingRecords, SandboxEnvironments
+- **Auth**: JWT-based (interceptor already reads `localStorage["token"]`)
+- **Real-time**: Logs, Monitoring, and Agent execution status are candidates for WebSocket / SSE streams
+- **File upload**: Sandbox live preview / demo builds may need blob/file storage
+- **API structure**: RESTful is compatible with current axios client setup; GraphQL would require adding a client library
+
+---
+
+*Review completed: 2026-02-28*

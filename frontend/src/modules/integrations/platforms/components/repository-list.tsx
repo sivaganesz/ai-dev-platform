@@ -6,9 +6,10 @@ import { GitBranch, Star, Lock, Globe } from "lucide-react";
 
 interface RepositoryListProps {
   platform: Platform | null;
+  showPrivate: boolean;
 }
 
-export function RepositoryList({ platform }: RepositoryListProps) {
+export function RepositoryList({ platform, showPrivate }: RepositoryListProps) {
   if (!platform) {
     return (
       <Card className="h-full flex items-center justify-center text-muted-foreground p-8">
@@ -16,6 +17,10 @@ export function RepositoryList({ platform }: RepositoryListProps) {
       </Card>
     );
   }
+
+  const visibleRepos = showPrivate
+    ? platform.repositories
+    : platform.repositories.filter((r) => r.visibility !== 'private');
 
   return (
     <Card className="h-full flex flex-col">
@@ -25,10 +30,17 @@ export function RepositoryList({ platform }: RepositoryListProps) {
             <GitBranch className="h-5 w-5 text-primary" />
             Repositories in {platform.platformName}
           </CardTitle>
-          <Badge variant="secondary">{platform.repositories.length} Total</Badge>
+          <Badge variant="secondary">{visibleRepos.length} of {platform.repositories.length} shown</Badge>
         </div>
       </CardHeader>
       <CardContent className="flex-1 overflow-auto">
+        {visibleRepos.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground">
+            <Lock className="h-8 w-8 mb-3 opacity-40" />
+            <p className="text-sm font-medium">Private repositories are hidden</p>
+            <p className="text-xs mt-1">Enable "Show Private" to see them</p>
+          </div>
+        ) : (
         <Table>
           <TableHeader>
             <TableRow>
@@ -39,7 +51,7 @@ export function RepositoryList({ platform }: RepositoryListProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {platform.repositories.map((repo) => (
+            {visibleRepos.map((repo) => (
               <TableRow key={repo.id}>
                 <TableCell className="font-medium">
                   <div className="flex flex-col">
@@ -78,6 +90,7 @@ export function RepositoryList({ platform }: RepositoryListProps) {
             ))}
           </TableBody>
         </Table>
+        )}
       </CardContent>
     </Card>
   );
