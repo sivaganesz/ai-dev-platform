@@ -4,14 +4,15 @@ import { PlatformCard } from "../components/platform-card";
 import { RepositoryList } from "../components/repository-list";
 import { PlatformActivityLogs } from "../components/platform-activity-logs";
 import { ConnectPlatformModal } from "../components/connect-platform-modal";
-import type { Platform } from "../platformsData";
+
 import { 
   Cloud, 
   CheckCircle2, 
   GitBranch, 
   LayoutGrid, 
   List,
-  Search
+  Search,
+  Lock
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -60,6 +61,7 @@ function PlatformsContent() {
   const { platforms, activityLogs, stats, isLoading } = usePlatformsData();
   const [selectedPlatformId, setSelectedPlatformId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showPrivate, setShowPrivate] = useState(true);
 
   const selectedPlatform = platforms.find(p => p.id === selectedPlatformId) || null;
 
@@ -111,6 +113,19 @@ function PlatformsContent() {
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-semibold">Configured Platforms</h2>
             <div className="flex items-center gap-2">
+              {/* Show Private Repositories Toggle */}
+              <button
+                onClick={() => setShowPrivate((prev) => !prev)}
+                className={`flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  showPrivate
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted text-muted-foreground border-border"
+                }`}
+                title={showPrivate ? "Hiding private repos: OFF" : "Hiding private repos: ON"}
+              >
+                <Lock className="h-3 w-3" />
+                {showPrivate ? "Private: Visible" : "Private: Hidden"}
+              </button>
               <div className="relative w-64">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
@@ -144,7 +159,7 @@ function PlatformsContent() {
 
           {/* Repository List Section */}
           <div className="mt-8">
-            <RepositoryList platform={selectedPlatform} />
+            <RepositoryList platform={selectedPlatform} showPrivate={showPrivate} />
           </div>
         </div>
 
