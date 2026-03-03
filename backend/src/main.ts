@@ -15,6 +15,8 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter({ logger: true }),
   );
+  app.enableShutdownHooks();
+
 
   const configService = app.get(ConfigService);
   const port = configService.get<number>('port') || 3001;
