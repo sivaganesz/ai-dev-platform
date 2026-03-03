@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── AUTH / USERS ─────────────────────────────
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  roleId       String?  @map("role_id")
+  teamId       String?  @map("team_id")
+  status       UserStatus @default(ACTIVE)
+  joinedAt     DateTime @default(now()) @map("joined_at")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  role         Role?    @relation(fields: [roleId], references: [id])
+  team         Team?    @relation(fields: [teamId], references: [id])
+  apiKeys      ApiKey[]
+  sessions     ActiveSession[]
+  profileExt   UserProfileExt?
+  themePrefs   ThemePreference?
+
+  @@map("users")
+}
+
+model Role {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  description   String?
+  permissions   Json     @default("[]")
+  modulesAccess Json     @default("[]") @map("modules_access")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  users         User[]
+
+  @@map("roles")
+}
+
+model Team {
+  id           String   @id @default(uuid())
+  name         String
+  description  String?
+  memberCount  Int      @default(0) @map("member_count")
+  leadId       String?  @map("lead_id")
+  parentTeamId String?  @map("parent_team_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  users        User[]
+
+  @@map("teams")
+}
+
+model ActiveSession {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  device    String?
+  location  String?
+  ip        String?
+  tokenHash String   @map("token_hash")
+  status    SessionStatus @default(ACTIVE)
+  loginTime DateTime @default(now()) @map("login_time")
+  expiresAt DateTime @map("expires_at")
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("active_sessions")
+}
+
+model ApiKey {
+  id           String   @id @default(uuid())
+  name         String
+  keyHash      String   @unique @map("key_hash")
+  keyIdDisplay String   @map("key_id_display")
+  scope        String?
+  ownerId      String   @map("owner_id")
+  environment  String   @default("Development")
+  permissions  Json     @default("[]")
+  status       ApiKeyStatus @default(ACTIVE)
+  createdDate  DateTime @default(now()) @map("created_date")
+  expiryDate   DateTime? @map("expiry_date")
+  lastUsed     DateTime? @map("last_used")
+
+  owner        User     @relation(fields: [ownerId], references: [id])
+  activityLogs KeyActivityLog[]
+
+  @@map("api_keys")
+}
+
+model KeyActivityLog {
+  id        String   @id @default(uuid())
+  keyId     String   @map("key_id")
+  module    String
+  action    String
+  status    String
+  ipAddress String?  @map("ip_address")
+  timestamp DateTime @default(now())
+
+  key       ApiKey   @relation(fields: [keyId], references: [id])
+
+  @@map("key_activity_logs")
+}
+
+model UserProfileExt {
+  id                    String   @id @default(uuid())
+  userId                String   @unique @map("user_id")
+  phone                 String?
+  jobTitle              String?  @map("job_title")
+  department            String?
+  manager               String?
+  timezone              String?
+  roleTier              String?  @map("role_tier")
+  agentPreferences      Json     @default("[]") @map("agent_preferences")
+  notificationPrefs     Json     @default("[]") @map("notification_preferences")
+  accessScopes          Json     @default("[]") @map("access_scopes")
+  updatedAt             DateTime @updatedAt @map("updated_at")
+
+  user                  User     @relation(fields: [userId], references: [id])
+
+  @@map("user_profile_ext")
+}
+
+model ThemePreference {
+  id                 String   @id @default(uuid())
+  userId             String   @unique @map("user_id")
+  mode               String   @default("dark")
+  accentColor        String?  @map("accent_color")
+  uiDensity          String?  @map("ui_density")
+  codeTheme          String?  @map("code_theme")
+  visualizationStyle String?  @map("visualization_style")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  user               User     @relation(fields: [userId], references: [id])
+
+  @@map("theme_preferences")
+}
+
+model SecurityIncident {
+  id        String   @id @default(uuid())
+  type      String
+  severity  String
+  module    String?
+  status    String   @default("OPEN")
+  timestamp DateTime @default(now())
+
+  @@map("security_incidents")
+}
+
+model SecurityAuditLog {
+  id        String   @id @default(uuid())
+  userId    String?  @map("user_id")
+  action    String
+  module    String?
+  ipAddress String?  @map("ip_address")
+  result    String?
+  timestamp DateTime @default(now())
+
+  @@map("security_audit_logs")
+}
+
+model CompanyProfile {
+  id                 String   @id @default(uuid())
+  name               String
+  legalName          String?  @map("legal_name")
+  industry           String?
+  size               String?
+  hq                 String?
+  founded            Int?
+  website            String?
+  supportEmail       String?  @map("support_email")
+  branding           Json?
+  compliance         Json?
+  deploymentPolicies Json?    @map("deployment_policies")
+  aiGovernance       Json?    @map("ai_governance")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("company_profile")
+}
+
+// ── ENUMS ────────────────────────────────────
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum SessionStatus {
+  ACTIVE
+  IDLE
+  EXPIRED
+}
+
+enum ApiKeyStatus {
+  ACTIVE
+  EXPIRED
+  REVOKED
+}
