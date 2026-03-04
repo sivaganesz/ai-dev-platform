@@ -1,28 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { 
-  userProfile, 
-  agentPreferences, 
-  notificationPreferences, 
-  activityTraces, 
-  accessScopes, 
-  profileStats 
-} from "@/../mock/core/settings/profileData";
+import axiosClient from "@/services/api/axios-client";
 
 export function useProfileData() {
   return useQuery({
     queryKey: ["user-profile-data"],
     queryFn: async () => {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      return {
-        profile: userProfile,
-        agentPrefs: agentPreferences,
-        notifications: notificationPreferences,
-        activity: activityTraces,
-        access: accessScopes,
-        stats: profileStats
-      };
+      const { data } = await axiosClient.get("/settings/profile");
+      return data.data; // TransformInterceptor wraps: { data: ..., success, timestamp }
     },
   });
 }
