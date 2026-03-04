@@ -19,12 +19,14 @@ model User {
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
 
-  role         Role?    @relation(fields: [roleId], references: [id])
-  team         Team?    @relation(fields: [teamId], references: [id])
-  apiKeys      ApiKey[]
-  sessions     ActiveSession[]
-  profileExt   UserProfileExt?
-  themePrefs   ThemePreference?
+  role           Role?          @relation(fields: [roleId], references: [id])
+  team           Team?          @relation(fields: [teamId], references: [id])
+  apiKeys        ApiKey[]
+  sessions       ActiveSession[]
+  profileExt     UserProfileExt?
+  themePrefs     ThemePreference?
+  mfaConfig      MFAConfig?
+  activityTraces ActivityTrace[]
 
   @@map("users")
 }
@@ -180,6 +182,43 @@ model CompanyProfile {
   updatedAt          DateTime @updatedAt @map("updated_at")
 
   @@map("company_profile")
+}
+
+model RegisteredDevice {
+  id          String   @id @default(uuid())
+  name        String
+  owner       String
+  trustLevel  String   @default("UNVERIFIED")
+  lastAccess  String
+  userId      String?  @map("user_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@map("registered_devices")
+}
+
+model MFAConfig {
+  id           String   @id @default(uuid())
+  userId       String   @unique @map("user_id")
+  status       String   @default("DISABLED")
+  method       String?
+  lastVerified String?  @map("last_verified")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@map("mfa_configs")
+}
+
+model ActivityTrace {
+  id        String   @id @default(uuid())
+  userId    String   @map("user_id")
+  action    String
+  module    String
+  date      DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("activity_traces")
 }
 
 // ── ENUMS ────────────────────────────────────
