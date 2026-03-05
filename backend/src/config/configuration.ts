@@ -31,6 +31,6 @@ export default () => ({
     refreshExpiry: process.env.JWT_REFRESH_EXPIRY || '7d',
   },
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5174',
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   },
 });

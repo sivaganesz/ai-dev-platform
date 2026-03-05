@@ -1,26 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { 
-  apiKeysData, 
-  keyScopes, 
-  keyActivityLogs, 
-  keyUsageStats, 
-  apiKeysSummary 
-} from "@/../mock/core/settings/apiKeysData";
+import axiosClient from "@/services/api/axios-client";
 
 export function useAPIKeysData() {
   return useQuery({
     queryKey: ["api-keys-data"],
     queryFn: async () => {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      return {
-        keys: apiKeysData,
-        scopes: keyScopes,
-        logs: keyActivityLogs,
-        usageTrend: keyUsageStats,
-        summary: apiKeysSummary
-      };
+      const { data } = await axiosClient.get("/settings/api-keys");
+      return data.data; // TransformInterceptor wraps: { data: ..., success, timestamp }
     },
   });
 }
