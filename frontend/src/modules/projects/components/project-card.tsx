@@ -1,16 +1,21 @@
-import { Calendar, User } from "lucide-react";
+import { Calendar, User, Pencil, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type Project } from "@/../mock/core/projects/projectsData";
+import { type Project } from "../hooks/use-projects-data";
 
 interface ProjectCardProps {
   project: Project;
+  onEdit?: (project: Project) => void;
+  onDelete?: (project: Project) => void;
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
-  const progress = Math.round((project.completedTasks / project.tasksCount) * 100);
+export function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
+  const progress = project.tasksCount > 0
+    ? Math.round((project.completedTasks / project.tasksCount) * 100)
+    : 0;
 
   const statusColors = {
     ACTIVE: "border-blue-500 text-blue-500",
@@ -43,7 +48,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
           <div className="flex items-center gap-1">
             <Calendar className="h-3 w-3" />
-            <span>Ends {new Date(project.endDate).toLocaleDateString()}</span>
+            <span>Ends {project.endDate ? new Date(project.endDate).toLocaleDateString() : "—"}</span>
           </div>
         </div>
 
@@ -66,6 +71,21 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </Badge>
           ))}
         </div>
+
+        {(onEdit || onDelete) && (
+          <div className="flex gap-2 pt-2 border-t">
+            {onEdit && (
+              <Button size="sm" variant="outline" onClick={() => onEdit(project)}>
+                <Pencil className="h-3 w-3 mr-1" /> Edit
+              </Button>
+            )}
+            {onDelete && (
+              <Button size="sm" variant="destructive" onClick={() => onDelete(project)}>
+                <Trash2 className="h-3 w-3 mr-1" /> Delete
+              </Button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

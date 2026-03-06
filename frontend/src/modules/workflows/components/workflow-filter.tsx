@@ -7,15 +7,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { projectsData } from "@/../mock/core/projects/projectsData";
 
 interface WorkflowFilterProps {
   onSearchChange: (value: string) => void;
   onStatusChange: (value: string) => void;
   onProjectChange: (value: string) => void;
+  projects: { id: string; name: string }[];
 }
 
-export function WorkflowFilter({ onSearchChange, onStatusChange, onProjectChange }: WorkflowFilterProps) {
+export function WorkflowFilter({ onSearchChange, onStatusChange, onProjectChange, projects }: WorkflowFilterProps) {
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
       <div className="relative flex-1">
@@ -33,7 +33,7 @@ export function WorkflowFilter({ onSearchChange, onStatusChange, onProjectChange
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Projects</SelectItem>
-            {projectsData.map(p => (
+            {projects.map(p => (
               <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
             ))}
           </SelectContent>

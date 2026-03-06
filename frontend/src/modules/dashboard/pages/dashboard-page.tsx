@@ -34,27 +34,27 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatsCard
           title="Total Projects"
-          value={metrics?.totalProjects || 0}
+          value={metrics?.totalProjects ?? 0}
           icon={FolderKanban}
           description="Across all teams"
           trend={{ value: "12%", isUp: true }}
         />
         <StatsCard
           title="Active Workflows"
-          value={metrics?.activeWorkflows || 0}
+          value={metrics?.activeWorkflows ?? 0}
           icon={GitBranch}
           description="Running automation"
           trend={{ value: "4", isUp: true }}
         />
         <StatsCard
           title="Active Agents"
-          value={metrics?.activeAgents || 0}
+          value={metrics?.activeAgents ?? 0}
           icon={Bot}
           description="AI entities online"
         />
         <StatsCard
           title="Deployments"
-          value={metrics?.deploymentsThisWeek || 0}
+          value={metrics?.deploymentsThisWeek ?? 0}
           icon={Rocket}
           description="This week"
           trend={{ value: "18%", isUp: true }}
@@ -63,19 +63,19 @@ export default function DashboardPage() {
 
       {/* Row 2: Charts */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
-        <ProjectsOverviewChart />
-        <WorkflowStatusChart />
+        <ProjectsOverviewChart projects={data?.projects ?? []} />
+        <WorkflowStatusChart workflows={data?.workflows ?? []} />
       </div>
 
       {/* Row 3: Team Performance */}
       <div className="grid gap-4 grid-cols-1">
-        <TeamPerformanceChart />
+        <TeamPerformanceChart teamPerformance={data?.teamPerformance ?? []} />
       </div>
 
       {/* Row 4: Activities & Deployments */}
       <div className="grid gap-4 grid-cols-1 md:grid-cols-4">
-        <RecentActivities />
-        <DeploymentSummary />
+        <RecentActivities activities={data?.activities ?? []} />
+        <DeploymentSummary metrics={metrics} />
       </div>
     </div>
   );

@@ -2,17 +2,23 @@ import { GitBranch, Box } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { type Workflow } from "@/../mock/core/workflows/workflowsData";
-import { projectsData } from "@/../mock/core/projects/projectsData";
+import { type Workflow } from "../hooks/use-workflows-data";
 
 interface WorkflowCardProps {
   workflow: Workflow;
+  projectName?: string;
+  onEdit?: (workflow: Workflow) => void;
+  onDelete?: (workflow: Workflow) => void;
 }
 
-export function WorkflowCard({ workflow }: WorkflowCardProps) {
-  const progress = Math.round((workflow.completedTasks / workflow.tasksCount) * 100);
-  const projectName = projectsData.find(p => p.id === workflow.projectId)?.name || "Unknown Project";
+export function WorkflowCard({ workflow, projectName, onEdit, onDelete }: WorkflowCardProps) {
+  const progress = workflow.tasksCount > 0
+    ? Math.round((workflow.completedTasks / workflow.tasksCount) * 100)
+    : 0;
+  const resolvedName = projectName || "Unknown Project";
 
   const statusColors = {
     RUNNING: "border-blue-500 text-blue-500",
@@ -29,7 +35,7 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
           </CardTitle>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Box className="h-3 w-3" />
-            <span>{projectName}</span>
+            <span>{resolvedName}</span>
           </div>
         </div>
         <Badge
@@ -52,12 +58,12 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
             </span>
             <span className="font-medium">{progress}%</span>
           </div>
-          <Progress 
-            value={progress} 
+          <Progress
+            value={progress}
             className={cn(
               "h-1.5",
               workflow.status === "FAILED" && "[&>div]:bg-red-500"
-            )} 
+            )}
           />
         </div>
 
@@ -68,6 +74,21 @@ export function WorkflowCard({ workflow }: WorkflowCardProps) {
             </Badge>
           ))}
         </div>
+
+        {(onEdit || onDelete) && (
+          <div className="flex gap-2 pt-2 border-t">
+            {onEdit && (
+              <Button size="sm" variant="outline" onClick={() => onEdit(workflow)}>
+                <Pencil className="h-3 w-3 mr-1" /> Edit
+              </Button>
+            )}
+            {onDelete && (
+              <Button size="sm" variant="destructive" onClick={() => onDelete(workflow)}>
+                <Trash2 className="h-3 w-3 mr-1" /> Delete
+              </Button>
+            )}
+          </div>
+        )}
       </CardContent>
     </Card>
   );
