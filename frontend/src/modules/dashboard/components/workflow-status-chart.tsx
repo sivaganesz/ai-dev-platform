@@ -1,13 +1,29 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const data = [
-  { name: "Running", value: 12, color: "#3b82f6" },
-  { name: "Completed", value: 30, color: "#10b981" },
-  { name: "Failed", value: 3, color: "#ef4444" },
-];
+interface Props {
+  workflows: { status: string }[];
+}
 
-export function WorkflowStatusChart() {
+export function WorkflowStatusChart({ workflows }: Props) {
+  const data = [
+    {
+      name: "Running",
+      value: workflows.filter(w => w.status === "RUNNING").length,
+      color: "#3b82f6",
+    },
+    {
+      name: "Completed",
+      value: workflows.filter(w => w.status === "COMPLETED").length,
+      color: "#10b981",
+    },
+    {
+      name: "Failed",
+      value: workflows.filter(w => w.status === "FAILED").length,
+      color: "#ef4444",
+    },
+  ];
+
   return (
     <Card className="col-span-2">
       <CardHeader>

@@ -1,7 +1,23 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
-export function DeploymentSummary() {
+interface DashboardMetrics {
+  deploymentsThisWeek: number;
+  failedWorkflows: number;
+  [key: string]: number;
+}
+
+interface Props {
+  metrics?: DashboardMetrics;
+}
+
+export function DeploymentSummary({ metrics }: Props) {
+  const totalDeploys = metrics?.deploymentsThisWeek ?? 28;
+  const failedBuilds = metrics?.failedWorkflows ?? 0;
+  const successRate = totalDeploys > 0
+    ? Math.round(((totalDeploys - failedBuilds) / totalDeploys) * 100)
+    : 100;
+
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -11,26 +27,26 @@ export function DeploymentSummary() {
         <div className="flex items-center justify-between">
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground leading-none">Total Deployments</p>
-            <p className="text-2xl font-bold">124</p>
+            <p className="text-2xl font-bold">{totalDeploys}</p>
           </div>
           <div className="text-right space-y-1">
             <p className="text-sm text-muted-foreground leading-none">Success Rate</p>
-            <p className="text-2xl font-bold text-green-500">96.8%</p>
+            <p className="text-2xl font-bold text-green-500">{successRate}%</p>
           </div>
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span>Production Stability</span>
-            <span className="font-medium">Stable</span>
+            <span className="font-medium">{successRate >= 90 ? "Stable" : "At Risk"}</span>
           </div>
-          <Progress value={96.8} className="h-2" />
+          <Progress value={successRate} className="h-2" />
         </div>
 
         <div className="grid grid-cols-2 gap-4 pt-4 border-t">
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground uppercase">Failed Builds</p>
-            <p className="text-lg font-semibold text-red-500">4</p>
+            <p className="text-lg font-semibold text-red-500">{failedBuilds}</p>
           </div>
           <div className="text-right space-y-1">
             <p className="text-xs text-muted-foreground uppercase">Avg. Build Time</p>
@@ -39,7 +55,7 @@ export function DeploymentSummary() {
         </div>
 
         <div className="pt-2 text-xs text-muted-foreground">
-          Last deployment: <strong>2 hours ago</strong> to Production
+          Tracking deployments this week
         </div>
       </CardContent>
     </Card>

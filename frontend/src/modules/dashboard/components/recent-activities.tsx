@@ -4,50 +4,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 
-const activities = [
-  {
-    id: "a1",
-    type: "DEPLOYMENT",
-    title: "Production Deploy",
-    description: "Alpha AI successfully deployed to production",
-    status: "SUCCESS",
-    timestamp: "2 hours ago",
-    user: "DevOps Agent",
-    initials: "DA",
-  },
-  {
-    id: "a2",
-    type: "WORKFLOW",
-    title: "UI Component Library",
-    description: "Build failed due to linting errors",
-    status: "FAILED",
-    timestamp: "3 hours ago",
-    user: "Frontend Agent",
-    initials: "FA",
-  },
-  {
-    id: "a3",
-    type: "PROJECT",
-    title: "New Project: Zeta",
-    description: "Project Zeta initialized by admin",
-    status: "SUCCESS",
-    timestamp: "5 hours ago",
-    user: "Siva Muthu",
-    initials: "SM",
-  },
-  {
-    id: "a4",
-    type: "AGENT",
-    title: "QA Agent assigned",
-    description: "Assigned to Project Delta for testing",
-    status: "IN_PROGRESS",
-    timestamp: "6 hours ago",
-    user: "System",
-    initials: "SY",
-  },
-];
+interface Activity {
+  id: string;
+  type: string;
+  title: string;
+  description: string;
+  status: string;
+  user: string;
+  timestamp: string;
+}
 
-export function RecentActivities() {
+interface RecentActivitiesProps {
+  activities: Activity[];
+}
+
+function timeAgo(timestamp: string): string {
+  const diff = Date.now() - new Date(timestamp).getTime();
+  const days = Math.floor(diff / 86_400_000);
+  const hours = Math.floor(diff / 3_600_000);
+  const minutes = Math.floor(diff / 60_000);
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  return `${minutes}m ago`;
+}
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .map(n => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+export function RecentActivities({ activities }: RecentActivitiesProps) {
   return (
     <Card className="col-span-2">
       <CardHeader>
@@ -59,7 +49,7 @@ export function RecentActivities() {
             {activities.map((activity) => (
               <div key={activity.id} className="flex gap-4">
                 <Avatar className="h-9 w-9 border">
-                  <AvatarFallback>{activity.initials}</AvatarFallback>
+                  <AvatarFallback>{getInitials(activity.user || "SY")}</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-1 flex-col gap-1">
                   <div className="flex items-center justify-between">
@@ -84,7 +74,7 @@ export function RecentActivities() {
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{activity.user}</span>
                     <span>•</span>
-                    <span>{activity.timestamp}</span>
+                    <span>{timeAgo(activity.timestamp)}</span>
                   </div>
                 </div>
               </div>

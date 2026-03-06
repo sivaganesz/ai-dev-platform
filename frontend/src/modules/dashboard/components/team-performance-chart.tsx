@@ -1,14 +1,23 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const data = [
-  { team: "Frontend", completed: 24, pending: 8 },
-  { team: "Backend", completed: 18, pending: 12 },
-  { team: "QA", completed: 30, pending: 5 },
-  { team: "DevOps", completed: 12, pending: 4 },
-];
+interface TeamPerformance {
+  team: string;
+  completedTasks: number;
+  pendingTasks: number;
+}
 
-export function TeamPerformanceChart() {
+interface Props {
+  teamPerformance: TeamPerformance[];
+}
+
+export function TeamPerformanceChart({ teamPerformance }: Props) {
+  const data = teamPerformance.map(t => ({
+    team: t.team,
+    completed: t.completedTasks,
+    pending: t.pendingTasks,
+  }));
+
   return (
     <Card className="col-span-full">
       <CardHeader>

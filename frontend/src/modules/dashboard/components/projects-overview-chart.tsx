@@ -1,13 +1,29 @@
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const data = [
-  { name: "Active", value: 8, color: "hsl(var(--primary))" },
-  { name: "Completed", value: 4, color: "hsl(var(--primary) / 0.7)" },
-  { name: "Pending", value: 2, color: "hsl(var(--muted))" },
-];
+interface Props {
+  projects: { status: string }[];
+}
 
-export function ProjectsOverviewChart() {
+export function ProjectsOverviewChart({ projects }: Props) {
+  const data = [
+    {
+      name: "Active",
+      value: projects.filter(p => p.status === "ACTIVE").length,
+      color: "hsl(var(--primary))",
+    },
+    {
+      name: "Completed",
+      value: projects.filter(p => p.status === "COMPLETED").length,
+      color: "hsl(var(--primary) / 0.7)",
+    },
+    {
+      name: "On Hold",
+      value: projects.filter(p => p.status === "ON_HOLD").length,
+      color: "hsl(var(--muted))",
+    },
+  ];
+
   return (
     <Card className="col-span-2">
       <CardHeader>
