@@ -25,8 +25,11 @@ export default function AgentsOverviewPage() {
 
   if (!data) return null;
 
-  const activeAgents = data.agents.filter((a) => a.status === "Active").length;
-  const totalExecutions = data.agents.reduce((acc, a) => acc + a.executionCount, 0);
+  const activeAgents = data.agents.filter((a: any) => a.status === "Active").length;
+  const totalExecutions = data.agents.reduce((acc: number, a: any) => acc + a.executionCount, 0);
+  const avgSuccessRate = data.agents.length > 0
+    ? (data.agents.reduce((acc: number, a: any) => acc + a.successRate, 0) / data.agents.length).toFixed(1)
+    : "0.0";
 
   return (
     <div className="p-6 space-y-8">
@@ -78,7 +81,7 @@ export default function AgentsOverviewPage() {
             <Rocket className="h-4 w-4 text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">96.4%</div>
+            <div className="text-2xl font-bold">{avgSuccessRate}%</div>
             <p className="text-xs text-muted-foreground mt-1">Reliability index</p>
           </CardContent>
         </Card>
