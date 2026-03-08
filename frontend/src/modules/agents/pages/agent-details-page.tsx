@@ -21,16 +21,7 @@ const agentMap: Record<string, string> = {
   ux: "AG-005",
 };
 
-// Mock trend data for individual agent
-const executionTrend = [
-  { time: "08:00", load: 12 },
-  { time: "09:00", load: 18 },
-  { time: "10:00", load: 45 },
-  { time: "11:00", load: 32 },
-  { time: "12:00", load: 56 },
-  { time: "13:00", load: 48 },
-  { time: "14:00", load: 64 },
-];
+
 
 export default function AgentDetailsPage() {
   const { agentType } = useParams<{ agentType: string }>();
@@ -58,7 +49,7 @@ export default function AgentDetailsPage() {
     );
   }
 
-  const { agent, activities, flow, tasks, timeline, handoff, workflows } = data;
+  const { agent, activities, flow, tasks, timeline, handoff, workflows, executionTrend } = data;
 
   return (
     <div className="p-6 space-y-8">
@@ -175,7 +166,7 @@ export default function AgentDetailsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-700">1,245</div>
+              <div className="text-2xl font-bold text-green-700">{agent.passedTests.toLocaleString()}</div>
             </CardContent>
           </Card>
           <Card className="bg-red-500/5 border-red-500/20">
@@ -186,7 +177,7 @@ export default function AgentDetailsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-700">12</div>
+              <div className="text-2xl font-bold text-red-700">{agent.failedTests}</div>
             </CardContent>
           </Card>
           <Card className="bg-orange-500/5 border-orange-500/20">
@@ -197,7 +188,7 @@ export default function AgentDetailsPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-700">2</div>
+              <div className="text-2xl font-bold text-orange-700">{agent.blockingDefects}</div>
             </CardContent>
           </Card>
         </div>
@@ -222,7 +213,7 @@ export default function AgentDetailsPage() {
           <ScrollArea className="h-[300px] pr-4">
             <div className="space-y-4">
               {activities.length > 0 ? (
-                activities.map((activity) => (
+                activities.map((activity: any) => (
                   <div key={activity.activityId} className="flex items-start justify-between border-b pb-4 last:border-0">
                     <div className="space-y-1">
                       <p className="font-medium text-sm">{activity.action}</p>

@@ -302,3 +302,154 @@ enum WorkflowStatus {
   COMPLETED
   FAILED
 }
+
+// ── AGENTS MODULE ─────────────────────────────
+
+enum AgentStatus {
+  Active
+  Idle
+  Failed
+}
+
+model Agent {
+  id                  String      @id
+  agentName           String      @map("agent_name")
+  agentType           String      @map("agent_type")
+  status              AgentStatus @default(Active)
+  executionCount      Int         @default(0) @map("execution_count")
+  successRate         Float       @default(0) @map("success_rate")
+  avgCompletionTime   String      @default("0m") @map("avg_completion_time")
+  lastExecutionAt     DateTime?   @map("last_execution_at")
+  deploymentLinked    Boolean     @default(false) @map("deployment_linked")
+  capabilities        Json        @default("[]")
+  executionFlowInput  String?     @map("execution_flow_input")
+  executionFlowOutput String?     @map("execution_flow_output")
+  executionFlowProcess Json       @default("[]") @map("execution_flow_process")
+  passedTests         Int         @default(0) @map("passed_tests")
+  failedTests         Int         @default(0) @map("failed_tests")
+  blockingDefects     Int         @default(0) @map("blocking_defects")
+
+  tasks           AgentTask[]
+  timelines       AgentTimeline[]
+  flowNodes       AgentFlowNode[]
+  handoffStats    AgentHandoffStats?
+  activities      AgentActivity[]
+  executionTrend  AgentExecutionTrend[]
+
+  @@map("agents")
+}
+
+model AgentTask {
+  id         String   @id @default(uuid())
+  agentId    String   @map("agent_id")
+  taskId     String   @map("task_id")
+  workflowId String   @map("workflow_id")
+  projectId  String   @map("project_id")
+  taskName   String   @map("task_name")
+  priority   String
+  status     String
+  startedAt  DateTime @map("started_at")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_tasks")
+}
+
+model AgentTimeline {
+  id           String   @id @default(uuid())
+  agentId      String   @map("agent_id")
+  entryId      String   @map("entry_id")
+  stageName    String   @map("stage_name")
+  duration     String
+  status       String
+  timestamp    DateTime
+  errorDetails String?  @map("error_details")
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_timelines")
+}
+
+model AgentFlowNode {
+  id             String    @id @default(uuid())
+  agentId        String    @map("agent_id")
+  nodeId         String    @map("node_id")
+  stageName      String    @map("stage_name")
+  inputArtifact  String    @map("input_artifact")
+  outputArtifact String    @map("output_artifact")
+  status         String
+  timestamp      DateTime?
+  sortOrder      Int       @default(0) @map("sort_order")
+  handoffType    String?   @map("handoff_type")
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_flow_nodes")
+}
+
+model AgentHandoffStats {
+  id              String @id @default(uuid())
+  agentId         String @unique @map("agent_id")
+  received        Int    @default(0)
+  delivered       Int    @default(0)
+  downstreamAgent String @map("downstream_agent")
+  artifactType    String @map("artifact_type")
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_handoff_stats")
+}
+
+model AgentActivity {
+  id             String   @id @default(uuid())
+  agentId        String   @map("agent_id")
+  activityId     String   @map("activity_id")
+  workflowId     String   @map("workflow_id")
+  taskId         String   @map("task_id")
+  action         String
+  status         String
+  duration       String?
+  timestamp      DateTime
+  agentName      String?  @map("agent_name")
+  projectId      String?  @map("project_id")
+  overviewStatus String?  @map("overview_status")
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_activities")
+}
+
+model AgentExecutionTrend {
+  id      String @id @default(uuid())
+  agentId String @map("agent_id")
+  time    String
+  load    Int    @default(0)
+
+  agent Agent @relation(fields: [agentId], references: [id])
+
+  @@map("agent_execution_trends")
+}
+
+model AgentTaskTrend {
+  id       String @id @default(uuid())
+  date     String
+  frontend Int    @default(0)
+  backend  Int    @default(0)
+  qa       Int    @default(0)
+  devops   Int    @default(0)
+  ux       Int    @default(0)
+
+  @@map("agent_task_trends")
+}
+
+model AgentDeploymentSummary {
+  id               String   @id @default(uuid())
+  totalDeployments Int      @default(0) @map("total_deployments")
+  successful       Int      @default(0)
+  failed           Int      @default(0)
+  successRate      Float    @default(0) @map("success_rate")
+  lastDeployment   DateTime @map("last_deployment")
+
+  @@map("agent_deployment_summary")
+}
